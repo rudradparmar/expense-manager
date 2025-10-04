@@ -104,7 +104,7 @@ export default function AdminDashboard() {
   const getUserById = (id) => users.find(u => u.id === id) || { name: "Unknown" };
 
   return (
-    <>
+    <div className="dashboard-layout">
       {/* INLINE STYLES (move to CSS file in practice) */}
       <style>{`/* YOUR CSS CONTENT from <style> tag above, paste here */`}</style>
 
@@ -162,7 +162,6 @@ export default function AdminDashboard() {
           </button>
         </div>
       </aside>
-
       <main className="main-content">
         <div className="page-container">
           <header className="page-header animate-fade-in-up">
@@ -392,6 +391,6 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
