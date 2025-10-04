@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import apiService from "../utils/apiService";
 import './EmployeeAddTransaction.css'
 const CATEGORIES = {
   expense: [
@@ -49,14 +51,40 @@ export default function EmployeeAddTransaction() {
     setCategory("");
   };
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!amount || !category || !description || !date) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
     setLoading(true);
-    // Simulate API
-    setTimeout(() => {
-      setLoading(false);
+    
+    try {
+      const expenseData = {
+        amount: parseFloat(amount),
+        currency: 'INR', // Default currency
+        category,
+        description,
+        date
+      };
+
+      await apiService.createExpense(expenseData);
       setShowSuccess(true);
-    }, 1000);
+      
+      // Redirect after success
+      setTimeout(() => {
+        navigate('/employee/transactions');
+      }, 2000);
+    } catch (error) {
+      console.error('Error creating expense:', error);
+      alert('Failed to create expense. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

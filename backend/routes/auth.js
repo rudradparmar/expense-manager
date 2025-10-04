@@ -11,6 +11,8 @@ router.post('/signup', async (req, res) => {
   try {
     const { name, email, password, country, role = 'Employee' } = req.body;
 
+    console.log('Signup attempt for:', email);
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -71,6 +73,8 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    console.log('Login attempt for:', email);
 
     // Find user
     const user = await User.findOne({ email }).populate('companyId');

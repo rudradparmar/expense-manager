@@ -6,6 +6,9 @@ import dotenv from 'dotenv';
 // Import routes
 import authRoutes from './routes/auth.js';
 import companyRoutes from './routes/company.js';
+import expenseRoutes from './routes/expense.js';
+import userRoutes from './routes/user.js';
+import reportRoutes from './routes/reports.js';
 
 dotenv.config();
 
@@ -22,11 +25,17 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/expense-m
   useUnifiedTopology: true,
 })
 .then(() => console.log('MongoDB connected successfully'))
-.catch((err) => console.error('MongoDB connection error:', err));
+.catch((err) => {
+  console.error('MongoDB connection error:', err);
+  console.log('Note: Make sure MongoDB is installed and running locally, or provide a cloud MongoDB URI in .env file');
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/company', companyRoutes);
+app.use('/api/expenses', expenseRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/reports', reportRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Expense Manager API Server Running' });
