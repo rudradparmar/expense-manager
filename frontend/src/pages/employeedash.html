@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Financial Dashboard - CyberCorp</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- ApexCharts for interactive charts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+      /* Custom styles for the cyberpunk theme */
+      :root {
+        --cyber-black: #0a0a0a;
+        --cyber-gray: #1a1a1a;
+        --cyber-light-gray: #374151;
+        --neon-blue: #00f0ff;
+        --neon-purple: #8b5cf6;
+        --neon-pink: #ec4899;
+        --neon-green: #10b981;
+        --neon-orange: #f59e0b;
+        --text-primary: #e0e0e0;
+        --text-secondary: #9ca3af;
+      }
+
+      html {
+        box-sizing: border-box;
+      }
+      *,
+      *:before,
+      *:after {
+        box-sizing: inherit;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--cyber-black);
+        color: var(--text-primary);
+        margin: 0;
+        padding: 2rem 1rem;
+      }
+
+      .font-cyber {
+        font-family: "Orbitron", sans-serif;
+      }
+
+      .glow-text {
+        color: #fff;
+        text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue),
+          0 0 20px var(--neon-blue);
+      }
+
+      /* Layout */
+      .dashboard-container {
+        max-width: 1200px;
+        margin: auto;
+        display: grid;
+        gap: 2rem;
+      }
+
+      /* Header */
+      .dashboard-header {
+        text-align: center;
+      }
+      .dashboard-header h1 {
+        font-size: 2.25rem;
+        margin: 0 0 0.5rem 0;
+      }
+      .dashboard-header .subtitle {
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+      }
+      .dashboard-header .welcome-msg {
+        color: var(--neon-blue);
+        font-weight: 500;
+      }
+
+      /* Grid Layouts */
+      .summary-grid,
+      .charts-grid,
+      .insights-grid {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .insights-grid {
+        grid-template-columns: 1fr;
+      }
+
+      @media (min-width: 768px) {
+        .insights-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .charts-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      /* Cards */
+      .cyber-card {
+        background-color: rgba(26, 26, 26, 0.8);
+        border: 1px solid var(--cyber-light-gray);
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .cyber-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 25px rgba(0, 240, 255, 0.2);
+      }
+
+      .gradient-border {
+        position: relative;
+        background: var(--cyber-gray);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        overflow: hidden;
+      }
+
+      .gradient-border::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: -1;
+        margin: -1px;
+        border-radius: inherit;
+        background: linear-gradient(
+          to right,
+          var(--neon-blue),
+          var(--neon-purple)
+        );
+      }
+
+      /* Summary Card Content */
+      .summary-card-content {
+        text-align: center;
+      }
+      .summary-card-content .icon-container {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 9999px;
+        margin: 0 auto 1rem auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .summary-card-content h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin: 0 0 0.5rem 0;
+      }
+      .summary-card-content .counter {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+      .text-neon-green {
+        color: var(--neon-green);
+      }
+      .text-neon-orange {
+        color: var(--neon-orange);
+      }
+
+      /* Chart Card Content */
+      .chart-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      .chart-header h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      /* Quick Insights */
+      .insight-box {
+        text-align: center;
+        padding: 1rem;
+        background-color: rgba(26, 26, 26, 0.5);
+        border-radius: 0.5rem;
+      }
+      .insight-box .label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+      }
+      .insight-box .value {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes scaleIn {
+        from {
+          transform: scale(0.5);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+
+      .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out forwards;
+        opacity: 0;
+      }
+      .animate-scale-in {
+        animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Header -->
+      <header
+        class="dashboard-header animate-fade-in-up"
+        style="animation-delay: 0.1s"
+      >
+        <h1 class="font-cyber glow-text">FINANCIAL DASHBOARD</h1>
+        <p class="subtitle">
+          Monitor your financial health with real-time insights
+        </p>
+        <p class="welcome-msg">Welcome back, Alex Ryder! 👋</p>
+      </header>
+
+      <!-- Summary Cards -->
+      <section class="summary-grid">
+        <!-- Balance Card -->
+        <div
+          class="gradient-border animate-fade-in-up"
+          style="animation-delay: 0.2s"
+        >
+          <div class="summary-card-content">
+            <div
+              class="icon-container"
+              style="
+                background-image: linear-gradient(
+                  to right,
+                  var(--neon-blue),
+                  var(--neon-purple)
+                );
+              "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path
+                  d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                ></path>
+              </svg>
+            </div>
+            <h3>Total Balance</h3>
+            <div
+              id="balance-counter"
+              class="counter font-cyber text-neon-green"
+            >
+              ₹0
+            </div>
+          </div>
+        </div>
+
+        <!-- Income Card -->
+        <div
+          class="gradient-border animate-fade-in-up"
+          style="animation-delay: 0.3s"
+        >
+          <div class="summary-card-content">
+            <div
+              class="icon-container"
+              style="
+                background-image: linear-gradient(
+                  to right,
+                  var(--neon-green),
+                  var(--neon-blue)
+                );
+              "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+            </div>
+            <h3>Total Income</h3>
+            <div id="income-counter" class="counter font-cyber text-neon-green">
+              ₹0
+            </div>
+          </div>
+        </div>
+
+        <!-- Expenses Card -->
+        <div
+          class="gradient-border animate-fade-in-up"
+          style="animation-delay: 0.4s"
+        >
+          <div class="summary-card-content">
+            <div
+              class="icon-container"
+              style="
+                background-image: linear-gradient(
+                  to right,
+                  var(--neon-orange),
+                  var(--neon-pink)
+                );
+              "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+                <polyline points="17 18 23 18 23 12"></polyline>
+              </svg>
+            </div>
+            <h3>Total Expenses</h3>
+            <div
+              id="expenses-counter"
+              class="counter font-cyber text-neon-orange"
+            >
+              ₹0
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Charts Section -->
+      <section class="charts-grid">
+        <!-- Monthly Trends Chart -->
+        <div
+          class="cyber-card animate-fade-in-up"
+          style="animation-delay: 0.5s"
+        >
+          <div class="chart-header">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--neon-blue)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            <h3>Monthly Trends</h3>
+          </div>
+          <div id="monthly-trends-chart"></div>
+        </div>
+
+        <!-- Category Distribution Chart -->
+        <div
+          class="cyber-card animate-fade-in-up"
+          style="animation-delay: 0.6s"
+        >
+          <div class="chart-header">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--neon-purple)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+              <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+            </svg>
+            <h3>Expense Categories</h3>
+          </div>
+          <div id="category-chart"></div>
+        </div>
+      </section>
+
+      <!-- Quick Insights -->
+      <section
+        class="cyber-card animate-fade-in-up"
+        style="animation-delay: 0.7s"
+      >
+        <div class="chart-header">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--neon-pink)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 3v18h18" />
+            <path d="M18 17V9" />
+            <path d="M13 17V5" />
+            <path d="M8 17v-3" />
+          </svg>
+          <h3>Quick Insights</h3>
+        </div>
+        <div class="insights-grid">
+          <div class="insight-box">
+            <p class="label">Savings Rate</p>
+            <p id="savings-rate" class="value text-neon-green">0%</p>
+          </div>
+          <div class="insight-box">
+            <p class="label">Expense Ratio</p>
+            <p id="expense-ratio" class="value text-neon-orange">0%</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // --- DATA ---
+        const balance = 45500;
+        const totalIncome = 120000;
+        const totalExpenses = 74500;
+        const monthlyData = [
+          { month: "Jan", income: 15000, expenses: 8000 },
+          { month: "Feb", income: 18000, expenses: 10000 },
+          { month: "Mar", income: 25000, expenses: 15000 },
+          { month: "Apr", income: 22000, expenses: 12500 },
+          { month: "May", income: 30000, expenses: 18000 },
+          { month: "Jun", income: 10000, expenses: 11000 },
+        ];
+        const categoryData = [
+          { category: "Groceries", amount: 15000 },
+          { category: "Utilities", amount: 8500 },
+          { category: "Transport", amount: 7000 },
+          { category: "Entertainment", amount: 12000 },
+          { category: "Rent", amount: 25000 },
+          { category: "Other", amount: 7000 },
+        ];
+        const COLORS = [
+          "#00f0ff",
+          "#8b5cf6",
+          "#ec4899",
+          "#10b981",
+          "#f59e0b",
+          "#ef4444",
+        ];
+
+        // --- Animated Counters ---
+        function animateCounter(
+          element,
+          targetValue,
+          prefix = "",
+          suffix = ""
+        ) {
+          const duration = 1500;
+          let start = 0;
+          const stepTime = 20;
+          const steps = duration / stepTime;
+          const increment = targetValue / steps;
+
+          const timer = setInterval(() => {
+            start += increment;
+            if (start >= targetValue) {
+              start = targetValue;
+              clearInterval(timer);
+            }
+            element.textContent =
+              prefix + Math.floor(start).toLocaleString() + suffix;
+          }, stepTime);
+        }
+
+        animateCounter(
+          document.getElementById("balance-counter"),
+          balance,
+          "₹"
+        );
+        animateCounter(
+          document.getElementById("income-counter"),
+          totalIncome,
+          "₹"
+        );
+        animateCounter(
+          document.getElementById("expenses-counter"),
+          totalExpenses,
+          "₹"
+        );
+
+        // --- Quick Insights Calculation ---
+        const savingsRate =
+          totalIncome > 0 ? ((balance / totalIncome) * 100).toFixed(1) : 0;
+        const expenseRatio =
+          totalIncome > 0
+            ? ((totalExpenses / totalIncome) * 100).toFixed(1)
+            : 0;
+        document.getElementById("savings-rate").textContent = savingsRate + "%";
+        document.getElementById("expense-ratio").textContent =
+          expenseRatio + "%";
+
+        // --- Monthly Trends Chart (Line Chart) ---
+        const lineChartOptions = {
+          chart: {
+            type: "line",
+            height: 300,
+            toolbar: { show: false },
+            background: "transparent",
+          },
+          series: [
+            { name: "Income", data: monthlyData.map((d) => d.income) },
+            { name: "Expenses", data: monthlyData.map((d) => d.expenses) },
+          ],
+          xaxis: {
+            categories: monthlyData.map((d) => d.month),
+            labels: { style: { colors: "var(--text-secondary)" } },
+          },
+          yaxis: {
+            labels: { style: { colors: "var(--text-secondary)" } },
+          },
+          colors: ["var(--neon-green)", "var(--neon-orange)"],
+          stroke: { curve: "smooth", width: 3 },
+          grid: { borderColor: "var(--cyber-light-gray)", strokeDashArray: 3 },
+          tooltip: {
+            theme: "dark",
+            style: { fontSize: "12px" },
+            x: { show: true },
+            y: {
+              formatter: (val) => `₹${val.toLocaleString()}`,
+            },
+            marker: { show: true },
+          },
+          legend: { labels: { useSeriesColors: true } },
+        };
+        const lineChart = new ApexCharts(
+          document.querySelector("#monthly-trends-chart"),
+          lineChartOptions
+        );
+        lineChart.render();
+
+        // --- Category Distribution Chart (Donut Chart) ---
+        const donutChartOptions = {
+          chart: {
+            type: "donut",
+            height: 300,
+            background: "transparent",
+          },
+          series: categoryData.map((d) => d.amount),
+          labels: categoryData.map((d) => d.category),
+          colors: COLORS,
+          dataLabels: {
+            enabled: true,
+            formatter: function (val, opts) {
+              return opts.w.globals.labels[opts.seriesIndex];
+            },
+            style: {
+              colors: ["#fff"],
+            },
+            dropShadow: {
+              enabled: true,
+              top: 1,
+              left: 1,
+              blur: 1,
+              color: "#000",
+              opacity: 0.45,
+            },
+          },
+          plotOptions: {
+            pie: {
+              donut: {
+                labels: {
+                  show: true,
+                  total: {
+                    show: true,
+                    label: "Total Expenses",
+                    color: "var(--text-secondary)",
+                    formatter: (w) =>
+                      `₹${w.globals.seriesTotals
+                        .reduce((a, b) => a + b, 0)
+                        .toLocaleString()}`,
+                  },
+                },
+              },
+            },
+          },
+          tooltip: {
+            theme: "dark",
+            y: {
+              formatter: (val) => `₹${val.toLocaleString()}`,
+            },
+          },
+          legend: { show: false },
+        };
+        const donutChart = new ApexCharts(
+          document.querySelector("#category-chart"),
+          donutChartOptions
+        );
+        donutChart.render();
+      });
+    </script>
+  </body>
+</html>
