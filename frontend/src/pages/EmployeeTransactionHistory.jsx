@@ -1,5 +1,8 @@
 import React, { useState, useMemo } from "react";
 import './EmployeeTransactionHistory.css'
+import '../styles/theme.css';
+import '../styles/dashboard.css';
+
 const MOCK_TRANSACTIONS = [
   {
     id: 1,
@@ -155,8 +158,7 @@ export default function EmployeeTransactionHistory() {
 
   // Layout
   return (
-    <>
-      <style>{`/* Insert your cyber style here from the <style> block in HTML or import from a file! */`}</style>
+    <div className="dashboard-layout">
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="logo-icon">
@@ -196,10 +198,6 @@ export default function EmployeeTransactionHistory() {
             </svg>
             <span>Transactions</span>
           </a>
-          <a href="#" className="nav-link" style={{ "--from-color": "var(--neon-orange)", "--to-color": "var(--neon-pink)" }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83" /><path d="M22 12A10 10 0 0 0 12 2v10z" /></svg>
-            <span>Budget & Insights</span>
-          </a>
           <a href="#" className="nav-link" style={{ "--from-color": "var(--neon-blue)", "--to-color": "var(--neon-green)" }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 11 12 14 22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></svg>
             <span>Approval Status</span>
@@ -229,7 +227,7 @@ export default function EmployeeTransactionHistory() {
           {/* FILTERS */}
           <section className="cyber-card animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
             <div className="filter-grid">
-              <div className="search-input">
+              {/* <div className="search-input">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 <input
                   type="text"
@@ -237,7 +235,7 @@ export default function EmployeeTransactionHistory() {
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                 />
-              </div>
+              </div> */}
               <select value={filterType} onChange={e => setFilterType(e.target.value)}>
                 <option value="all">All Types</option>
                 <option value="income">Income</option>
@@ -359,6 +357,6 @@ export default function EmployeeTransactionHistory() {
           </section>
         </div>
       </main>
-    </>
+    </div>
   );
 }

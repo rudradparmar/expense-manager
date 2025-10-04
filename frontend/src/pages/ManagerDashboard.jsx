@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import './ManagerDashboard.css'
-
+import '../styles/dashboard.css';
 
 // Mock initial expense data
 const INITIAL_EXPENSES = [
@@ -156,8 +156,7 @@ export default function ManagerDashboard() {
   const currentExpense = expenses.find(exp => exp.id === modal.expenseId);
 
   return (
-    <>
-      <style>{`/* Place your CSS from <style> tag here or import from CSS file */`}</style>
+    <div className="dashboard-layout">
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="logo-icon">
@@ -286,8 +285,7 @@ export default function ManagerDashboard() {
             </div>
           </div>
         </div>
-      </main>
-
+  </main>
       {/* APPROVAL MODAL */}
       <div className={`modal-overlay${modal.open ? " visible" : ""}`}>
         <div className="modal-content">
@@ -320,6 +318,6 @@ export default function ManagerDashboard() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

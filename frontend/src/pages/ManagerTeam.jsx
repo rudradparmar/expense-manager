@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import './ManagerTeam.css'
+import '../styles/theme.css';
+import '../styles/dashboard.css';
+
 // Mock initial data for the team
 const INITIAL_TEAM = [
   {
@@ -74,8 +77,7 @@ export default function ManagerTeam() {
   };
 
   return (
-    <>
-      <style>{`/* Place CSS from <style> tag or import in your app! */`}</style>
+    <div className="dashboard-layout">
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="logo-icon">
@@ -133,8 +135,8 @@ export default function ManagerTeam() {
                   <option>Contractor</option>
                   <option>Intern</option>
                 </select>
-              </div>
-              <button type="submit" className="neon-button">Add Member</button>
+              </div>  
+              <button type="submit" className="neon-button" style={{marginTop: "0"}}>Add Member</button>
             </form>
           </div>
           {/* TEAM LIST */}
@@ -177,8 +179,7 @@ export default function ManagerTeam() {
             <p>
               {modal.member
                 ? `Are you sure you want to remove ${modal.member.name}?`
-                : "Are you sure you want to remove this team member?"
-              }
+                : "Are you sure you want to remove this team member?"}
             </p>
           </div>
           <div className="modal-footer">
@@ -187,6 +188,6 @@ export default function ManagerTeam() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

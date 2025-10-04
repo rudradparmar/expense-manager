@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ApexCharts from "apexcharts";
 import Chart from "react-apexcharts";
+import '../styles/theme.css';
+import '../styles/dashboard.css';
 import './ManagerReports.css'
 // MOCK DATA
 const TEAM_MEMBERS = [
@@ -145,8 +147,7 @@ export default function ManagerReports() {
 
   // Render
   return (
-    <>
-      <style>{`/* Paste your cyberpunk style or import CSS file here for best experience */`}</style>
+    <div className="dashboard-layout">
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="logo-icon">
@@ -339,6 +340,6 @@ export default function ManagerReports() {
           )}
         </div>
       </main>
-    </>
+    </div>
   );
 }
