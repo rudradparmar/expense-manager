@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import apiService from "../utils/apiService";
 import './ManagerDashboard.css'
 import '../styles/dashboard.css';
 
@@ -67,13 +68,31 @@ const INITIAL_EXPENSES = [
 ];
 
 export default function ManagerDashboard() {
-  const [expenses, setExpenses] = useState(INITIAL_EXPENSES);
+  const [expenses, setExpenses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState({
     open: false,
     expenseId: null,
     action: null,
     comment: ""
   });
+
+  // Load pending approvals on component mount
+  useEffect(() => {
+    loadPendingApprovals();
+  }, []);
+
+  const loadPendingApprovals = async () => {
+    try {
+      setLoading(true);
+      const pendingExpenses = await apiService.getPendingApprovals();
+      setExpenses(pendingExpenses);
+    } catch (error) {
+      console.error('Error loading pending approvals:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Filter expenses
   const pendingExpenses = expenses.filter(exp => exp.status === "pending");
@@ -90,14 +109,23 @@ export default function ManagerDashboard() {
     setModal({ open: false, expenseId: null, action: null, comment: "" });
   };
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     const { expenseId, action, comment } = modal;
-    setExpenses(expenses.map(exp => 
-      exp.id === expenseId 
-        ? { ...exp, status: action + "d", comment: comment || null }
-        : exp
-    ));
-    closeModal();
+    
+    try {
+      if (action === 'approve') {
+        await apiService.approveExpense(expenseId, comment);
+      } else {
+        await apiService.rejectExpense(expenseId, comment);
+      }
+      
+      // Reload the expenses after action
+      await loadPendingApprovals();
+      closeModal();
+    } catch (error) {
+      console.error('Error processing expense:', error);
+      alert('Failed to process expense. Please try again.');
+    }
   };
 
   // Render expense item

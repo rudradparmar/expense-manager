@@ -1,14 +1,68 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./Login.css";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const togglePassword = () => setShowPassword((prev) => !prev);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const togglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const result = await login(formData.email, formData.password);
+      
+      if (result.success) {
+        // Redirect based on user role
+        const { role } = result.user;
+        switch (role) {
+          case 'Admin':
+            navigate('/admin/dashboard');
+            break;
+          case 'Manager':
+            navigate('/manager/dashboard');
+            break;
+          case 'Employee':
+            navigate('/employee/dashboard');
+            break;
+          default:
+            navigate('/employee/dashboard');
+        }
+      } else {
+        setError(result.error || "Login failed");
+      }
+    } catch {
+      setError("An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-  <div className="viewport-center">
-  <div className="center-content-limit narrow">
+    <div className="layout-center-shell center-page-wrapper">
+      <div className="center-content-limit narrow" style={{ width: "100%" }}>
         <div className="main-wrapper">
           {/* Header */}
           <div className="header animate-fade-in-up" style={{ textAlign: "center" }}>
@@ -41,14 +95,14 @@ export default function Login() {
               maxWidth: "480px",
             }}
           >
-            <form className="auth-form">
+            <form className="auth-form" onSubmit={handleSubmit}>
               {/* Email Field */}
               <div>
                 <label className="form-label" htmlFor="email">
                   Email Address
                 </label>
                 <div className="input-wrapper">
-                  {/* <span className="input-icon"> */}
+                  <span className="input-icon">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -63,7 +117,7 @@ export default function Login() {
                       <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                     </svg>
-                  {/* </span> */}
+                  </span>
                   <input
                     type="email"
                     id="email"
@@ -71,6 +125,8 @@ export default function Login() {
                     placeholder="Enter your email"
                     required
                     className="form-input"
+                    value={formData.email}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
@@ -81,7 +137,7 @@ export default function Login() {
                   Password
                 </label>
                 <div className="input-wrapper">
-                  {/* <span className="input-icon"> */}
+                  <span className="input-icon">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -103,7 +159,7 @@ export default function Login() {
                       ></rect>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
-                  {/* </span> */}
+                  </span>
                   <input
                     id="password-input"
                     type={showPassword ? "text" : "password"}
@@ -111,12 +167,13 @@ export default function Login() {
                     placeholder="Enter your password"
                     required
                     className="form-input password-field"
+                    value={formData.password}
+                    onChange={handleChange}
                   />
                   <button
                     type="button"
                     onClick={togglePassword}
                     className="toggle-password-btn"
-                    style={{ marginRight: "30px" }}
                   >
                     {!showPassword ? (
                       <svg
@@ -153,15 +210,13 @@ export default function Login() {
                 </div>
               </div>
 
+              {/* Error Message */}
+              {error && (
+                <div className="error-message">{error}</div>
+              )}
+
               {/* Submit Button */}
-              <button
-                type="submit"
-                className="neon-button"
-                style={{
-                  width: "100%",
-                  justifyContent: "center",
-                }}
-              >
+              <button type="submit" className="neon-button" disabled={loading}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -177,12 +232,11 @@ export default function Login() {
                   <polyline points="10 17 15 12 10 7"></polyline>
                   <line x1="15" y1="12" x2="3" y2="12"></line>
                 </svg>
-                <span>Sign In</span>
+                <span>{loading ? 'Signing In...' : 'Sign In'}</span>
               </button>
             </form>
-
             {/* Toggle Mode */}
-            <div className="toggle-container" style={{ textAlign: "center" }}>
+            <div className="toggle-container">
               <Link to="/signup" className="toggle-link">
                 Don't have an account? Sign up
               </Link>
@@ -192,7 +246,7 @@ export default function Login() {
           {/* Footer */}
           <div
             className="footer animate-fade-in"
-            style={{ animationDelay: "0.3s", textAlign: "center" }}
+            style={{ animationDelay: "0.3s" }}
           >
             <p>Secure • Private</p>
           </div>

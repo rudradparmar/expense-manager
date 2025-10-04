@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import apiService from "../utils/apiService";
 import './EmployeeTransactionHistory.css'
 import '../styles/theme.css';
 import '../styles/dashboard.css';
@@ -86,7 +87,8 @@ function getCategoryIcon(cat) {
 
 export default function EmployeeTransactionHistory() {
   // State
-  const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterCategory, setFilterCategory] = useState("all");
@@ -94,6 +96,33 @@ export default function EmployeeTransactionHistory() {
   const [sortOrder, setSortOrder] = useState("desc");
   const [editingId, setEditingId] = useState(null);
   const [editValues, setEditValues] = useState({});
+
+  // Load user's expenses
+  useEffect(() => {
+    loadMyExpenses();
+  }, []);
+
+  const loadMyExpenses = async () => {
+    try {
+      setLoading(true);
+      const expenses = await apiService.getMyExpenses();
+      // Transform backend expense format to match frontend transaction format
+      const transformedExpenses = expenses.map(expense => ({
+        id: expense._id,
+        type: 'expense',
+        description: expense.description,
+        category: expense.category,
+        amount: expense.amount,
+        date: expense.date,
+        status: expense.status
+      }));
+      setTransactions(transformedExpenses);
+    } catch (error) {
+      console.error('Error loading expenses:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Categories for the filter dropdown
   const categories = useMemo(
