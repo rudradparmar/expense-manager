@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Budget & Insights - CyberCorp</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cyber-black: #0a0a0a;
+        --cyber-dark: #111;
+        --cyber-gray: #1a1a1a;
+        --cyber-light-gray: #374151;
+        --neon-blue: #00f0ff;
+        --neon-purple: #8b5cf6;
+        --neon-pink: #ec4899;
+        --neon-green: #10b981;
+        --neon-orange: #f59e0b;
+        --text-primary: #e0e0e0;
+        --text-secondary: #9ca3af;
+      }
+
+      html {
+        box-sizing: border-box;
+      }
+      *,
+      *:before,
+      *:after {
+        box-sizing: inherit;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--cyber-black);
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .font-cyber {
+        font-family: "Orbitron", sans-serif;
+      }
+      .glow-text {
+        color: #fff;
+        text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue),
+          0 0 20px var(--neon-blue);
+      }
+
+      /* Page Layout */
+      .sidebar {
+        width: 280px;
+        background-color: var(--cyber-dark);
+        border-right: 1px solid rgba(0, 240, 255, 0.2);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+      }
+      .main-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem;
+      }
+
+      /* Sidebar Styles */
+      .sidebar-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .sidebar-header .logo-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        background-image: linear-gradient(
+          to right,
+          var(--neon-blue),
+          var(--neon-purple)
+        );
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .sidebar-header .logo-text h1 {
+        font-size: 1.25rem;
+        margin: 0;
+        line-height: 1.2;
+      }
+      .sidebar-header .logo-text p {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin: 0;
+      }
+      .user-profile {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .user-profile img {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 9999px;
+        border: 2px solid rgba(0, 240, 255, 0.3);
+        object-fit: cover;
+      }
+      .user-profile .user-info h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .user-profile .user-info p {
+        margin: 0;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+      .sidebar nav {
+        flex: 1;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+      .nav-link:hover {
+        color: white;
+        background-color: rgba(26, 26, 26, 0.5);
+        transform: translateX(10px);
+      }
+      .nav-link.active {
+        color: white;
+        background-image: linear-gradient(
+          to right,
+          var(--from-color),
+          var(--to-color)
+        );
+        box-shadow: 0 0 15px var(--from-color);
+      }
+      .user-actions {
+        padding: 1rem;
+        border-top: 1px solid rgba(0, 240, 255, 0.2);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .action-button {
+        width: 100%;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font: inherit;
+        cursor: pointer;
+        text-align: left;
+      }
+      .action-button.logout {
+        color: var(--neon-orange);
+      }
+      .action-button.logout:hover {
+        background-color: rgba(245, 158, 11, 0.2);
+      }
+
+      /* Main Content */
+      .page-container {
+        max-width: 1024px;
+        margin: auto;
+        display: grid;
+        gap: 2rem;
+      }
+      .page-header {
+        text-align: center;
+      }
+      .page-header h1 {
+        font-size: 2.25rem;
+        margin-bottom: 0.5rem;
+      }
+      .page-header .subtitle {
+        color: var(--text-secondary);
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      @media (min-width: 1024px) {
+        .content-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .cyber-card {
+        background-color: rgba(26, 26, 26, 0.8);
+        border: 1px solid var(--cyber-light-gray);
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+      .card-header h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      /* Budget Card */
+      .budget-display .amount {
+        font-size: 2.5rem;
+      }
+      .budget-display .label {
+        color: var(--text-secondary);
+        margin-top: 0.25rem;
+      }
+      .input-wrapper {
+        position: relative;
+      }
+      .input-wrapper svg {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--neon-blue);
+      }
+      .budget-edit input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        background-color: var(--cyber-gray);
+        border: 1px solid var(--cyber-light-gray);
+        border-radius: 0.5rem;
+        color: var(--text-primary);
+      }
+
+      /* Progress Card */
+      .progress-display .percentage {
+        font-size: 2rem;
+      }
+      .progress-bar-bg {
+        width: 100%;
+        background-color: var(--cyber-gray);
+        border-radius: 9999px;
+        height: 0.75rem;
+        overflow: hidden;
+      }
+      .progress-bar-fg {
+        height: 100%;
+        border-radius: 9999px;
+        transition: width 1s ease-out;
+      }
+      .progress-stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        text-align: center;
+      }
+      .progress-stats-grid .label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+      }
+      .progress-stats-grid .value {
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
+      /* Insights & Achievements */
+      .insights-grid,
+      .achievements-grid {
+        display: grid;
+        gap: 1rem;
+      }
+      .insights-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+      @media (min-width: 768px) {
+        .achievements-grid {
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+      }
+
+      .insight-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 1rem;
+        background-color: rgba(26, 26, 26, 0.5);
+        border-radius: 0.5rem;
+        border: 1px solid var(--cyber-light-gray);
+      }
+      .insight-item .icon {
+        font-size: 1.5rem;
+      }
+      .insight-item .text {
+        font-size: 0.875rem;
+      }
+
+      .achievement-item {
+        text-align: center;
+        padding: 1rem;
+      }
+      .achievement-item .icon-container {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 9999px;
+        margin: 0 auto 0.75rem auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+      }
+      .achievement-item h3 {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+      .achievement-item p {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+      }
+
+      /* General Classes */
+      .text-neon-green {
+        color: var(--neon-green);
+      }
+      .text-neon-purple {
+        color: var(--neon-purple);
+      }
+      .text-neon-orange {
+        color: var(--neon-orange);
+      }
+      .text-neon-blue {
+        color: var(--neon-blue);
+      }
+      .hidden {
+        display: none;
+      }
+
+      /* Buttons */
+      .neon-button,
+      .neon-button-secondary {
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+      }
+      .neon-button {
+        background-color: var(--neon-blue);
+        color: var(--cyber-dark);
+      }
+      .neon-button-secondary {
+        background-color: var(--cyber-light-gray);
+        color: var(--text-primary);
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out forwards;
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <!-- Sidebar content -->
+      <div class="sidebar-header">
+        <div class="logo-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#fff"
+            stroke-width="2"
+          >
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <h1 class="font-cyber glow-text">EXPENSE TRACKER</h1>
+          <p>FUTURISTIC FINANCE</p>
+        </div>
+      </div>
+      <div class="user-profile">
+        <img
+          src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex"
+          alt="User Avatar"
+        />
+        <div class="user-info">
+          <h3>Alex Ryder</h3>
+          <p>alex.ryder@cybercorp.io</p>
+        </div>
+      </div>
+      <nav>
+        <a
+          href="dashboard.html"
+          class="nav-link"
+          style="--from-color: var(--neon-blue); --to-color: var(--neon-purple)"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline></svg
+          ><span>Dashboard</span></a
+        >
+        <a
+          href="#"
+          class="nav-link"
+          style="--from-color: var(--neon-green); --to-color: var(--neon-blue)"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M5 12h14"></path>
+            <path d="M12 5v14"></path></svg
+          ><span>Add Transaction</span></a
+        >
+        <a
+          href="transactions.html"
+          class="nav-link"
+          style="--from-color: var(--neon-purple); --to-color: var(--neon-pink)"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <line x1="8" y1="6" y2="21"></line>
+            <line x1="8" y1="12" y2="21"></line>
+            <line x1="8" y1="18" y2="21"></line>
+            <line x1="3" y1="6" y2="3.01"></line>
+            <line x1="3" y1="12" y2="3.01"></line>
+            <line x1="3" y1="18" y2="3.01"></line></svg
+          ><span>Transactions</span></a
+        >
+        <a
+          href="#"
+          class="nav-link active"
+          style="--from-color: var(--neon-orange); --to-color: var(--neon-pink)"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+            <path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg
+          ><span>Budget & Insights</span></a
+        >
+        <a
+          href="#"
+          class="nav-link"
+          style="--from-color: var(--neon-blue); --to-color: var(--neon-green)"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path
+              d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+            ></path></svg
+          ><span>Approval Status</span></a
+        >
+      </nav>
+      <div class="user-actions">
+        <a href="profile.html" class="nav-link action-button"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle></svg
+          ><span>Profile</span></a
+        >
+        <button class="nav-link action-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+            ></path></svg
+          ><span>Settings</span>
+        </button>
+        <button class="nav-link action-button logout">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" x2="9" y1="12" y2="12"></line></svg
+          ><span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-container">
+        <header class="page-header animate-fade-in-up">
+          <h1 class="font-cyber glow-text">BUDGET & INSIGHTS</h1>
+          <p class="subtitle">
+            Set goals, track progress, and unlock achievements
+          </p>
+        </header>
+
+        <div class="content-grid">
+          <!-- Budget Card -->
+          <div
+            class="cyber-card animate-fade-in-up"
+            style="animation-delay: 0.1s"
+          >
+            <div class="card-header">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--neon-blue)"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="6"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+              </svg>
+              <h2>Monthly Budget</h2>
+            </div>
+            <div
+              id="budget-display-container"
+              class="budget-display text-center space-y-4"
+            >
+              <p class="amount font-cyber text-neon-blue" id="budget-amount">
+                ₹0
+              </p>
+              <button id="edit-budget-btn" class="neon-button-secondary">
+                Edit Budget
+              </button>
+            </div>
+            <div
+              id="budget-edit-container"
+              class="budget-edit space-y-4 hidden"
+            >
+              <div class="input-wrapper">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path
+                    d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                  ></path></svg
+                ><input
+                  type="number"
+                  id="new-budget-input"
+                  placeholder="Enter budget amount"
+                />
+              </div>
+              <div style="display: flex; gap: 0.5rem">
+                <button id="save-budget-btn" class="neon-button">Save</button
+                ><button id="cancel-budget-btn" class="neon-button-secondary">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Budget Progress -->
+          <div
+            class="cyber-card animate-fade-in-up"
+            style="animation-delay: 0.2s"
+          >
+            <div class="card-header">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--neon-purple)"
+                stroke-width="2"
+              >
+                <path d="M3 3v18h18" />
+                <path d="M18 17V9" />
+                <path d="M13 17V5" />
+                <path d="M8 17v-3" />
+              </svg>
+              <h2>Budget Progress</h2>
+            </div>
+            <div class="space-y-4">
+              <div class="progress-display text-center">
+                <p class="percentage font-cyber" id="budget-used-percent">0%</p>
+                <p class="label">Budget Used</p>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fg" id="progress-bar"></div>
+              </div>
+              <div class="progress-stats-grid">
+                <div>
+                  <p class="label">Spent</p>
+                  <p class="value text-neon-orange" id="spent-amount">₹0</p>
+                </div>
+                <div>
+                  <p class="label">Remaining</p>
+                  <p class="value text-neon-green" id="remaining-amount">₹0</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Insights -->
+        <div
+          class="cyber-card animate-fade-in-up"
+          style="animation-delay: 0.3s"
+        >
+          <div class="card-header">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--neon-pink)"
+              stroke-width="2"
+            >
+              <path
+                d="M18 13a6 6 0 0 1-6 6 6 6 0 0 1-6-6 6 6 0 0 1 6-6V2l4 4-4 4V7a4 4 0 0 0-4 4 4 4 0 0 0 4 4z"
+              />
+              <path
+                d="M6 13a6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6V2l-4 4 4 4v-3a4 4 0 0 0 4-4 4 4 0 0 0-4-4z"
+              />
+            </svg>
+            <h2>AI-Powered Insights</h2>
+          </div>
+          <div class="insights-grid" id="insights-container"></div>
+        </div>
+
+        <!-- Achievements -->
+        <div
+          class="cyber-card animate-fade-in-up"
+          style="animation-delay: 0.4s"
+        >
+          <div class="card-header">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--neon-orange)"
+              stroke-width="2"
+            >
+              <path d="M12 8V2" />
+              <path d="M12 14v-2" />
+              <path d="m15.09 13.34-.9-.52" />
+              <path d="m15.09 10.16.9-.52" />
+              <path d="M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20z" />
+              <path d="M8.91 13.34l.9-.52" />
+              <path d="M8.91 10.16-.9-.52" />
+            </svg>
+            <h2>Achievements</h2>
+          </div>
+          <div class="achievements-grid" id="achievements-container"></div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // --- MOCK DATA ---
+        let budget = 50000;
+        const totalExpenses = 32000;
+        const categoryData = [
+          { category: "Rent", amount: 15000 },
+          { category: "Food & Dining", amount: 8000 },
+          { category: "Transportation", amount: 4000 },
+          { category: "Entertainment", amount: 3000 },
+          { category: "Shopping", amount: 2000 },
+        ];
+        const monthlyData = [
+          { month: "Aug", expenses: 35000 },
+          { month: "Sep", expenses: 32000 },
+        ];
+
+        // --- DOM ELEMENTS ---
+        const budgetAmountEl = document.getElementById("budget-amount");
+        const editBudgetBtn = document.getElementById("edit-budget-btn");
+        const budgetDisplayContainer = document.getElementById(
+          "budget-display-container"
+        );
+        const budgetEditContainer = document.getElementById(
+          "budget-edit-container"
+        );
+        const newBudgetInput = document.getElementById("new-budget-input");
+        const saveBudgetBtn = document.getElementById("save-budget-btn");
+        const cancelBudgetBtn = document.getElementById("cancel-budget-btn");
+        const budgetUsedPercentEl = document.getElementById(
+          "budget-used-percent"
+        );
+        const progressBarEl = document.getElementById("progress-bar");
+        const spentAmountEl = document.getElementById("spent-amount");
+        const remainingAmountEl = document.getElementById("remaining-amount");
+        const insightsContainer = document.getElementById("insights-container");
+        const achievementsContainer = document.getElementById(
+          "achievements-container"
+        );
+
+        // --- FUNCTIONS ---
+        function renderAll() {
+          const budgetUsed = budget > 0 ? (totalExpenses / budget) * 100 : 0;
+
+          // Render Budget
+          budgetAmountEl.textContent = `₹${budget.toLocaleString()}`;
+          newBudgetInput.value = budget;
+
+          // Render Progress
+          budgetUsedPercentEl.textContent = `${budgetUsed.toFixed(1)}%`;
+          spentAmountEl.textContent = `₹${totalExpenses.toLocaleString()}`;
+          remainingAmountEl.textContent = `₹${Math.max(
+            0,
+            budget - totalExpenses
+          ).toLocaleString()}`;
+
+          // Progress Bar Color and Width
+          progressBarEl.style.width = `${Math.min(budgetUsed, 100)}%`;
+          let progressColor =
+            "linear-gradient(to right, var(--neon-green), var(--neon-blue))";
+          if (budgetUsed > 80)
+            progressColor =
+              "linear-gradient(to right, var(--neon-orange), #ef4444)";
+          else if (budgetUsed > 60)
+            progressColor =
+              "linear-gradient(to right, var(--neon-blue), var(--neon-purple))";
+          progressBarEl.style.backgroundImage = progressColor;
+          budgetUsedPercentEl.className = `percentage font-cyber ${
+            budgetUsed > 80
+              ? "text-neon-orange"
+              : budgetUsed > 60
+              ? "text-neon-blue"
+              : "text-neon-green"
+          }`;
+
+          // Render Insights
+          renderInsights(budgetUsed);
+
+          // Render Achievements
+          renderAchievements(budgetUsed);
+        }
+
+        function renderInsights(budgetUsed) {
+          insightsContainer.innerHTML = "";
+          const insights = [];
+          if (budget > 0) {
+            if (budgetUsed > 80)
+              insights.push({
+                icon: "⚡",
+                text: `You've used ${budgetUsed.toFixed(
+                  1
+                )}% of your budget. Consider cutting back.`,
+                color: "text-neon-orange",
+              });
+            else if (budgetUsed < 50)
+              insights.push({
+                icon: "🎯",
+                text: `Great job! You're only using ${budgetUsed.toFixed(
+                  1
+                )}% of your budget.`,
+                color: "text-neon-green",
+              });
+          }
+          if (categoryData.length > 0) {
+            const topCategory = categoryData.sort(
+              (a, b) => b.amount - a.amount
+            )[0];
+            const topPercentage = (topCategory.amount / totalExpenses) * 100;
+            if (topPercentage > 40)
+              insights.push({
+                icon: "📊",
+                text: `${topCategory.category} is ${topPercentage.toFixed(
+                  1
+                )}% of your expenses.`,
+                color: "text-neon-blue",
+              });
+          }
+          if (
+            monthlyData.length >= 2 &&
+            monthlyData[1].expenses < monthlyData[0].expenses
+          ) {
+            insights.push({
+              icon: "📉",
+              text: "Your spending decreased compared to last month!",
+              color: "text-neon-green",
+            });
+          }
+
+          if (insights.length > 0) {
+            insights.forEach((insight) => {
+              insightsContainer.innerHTML += `<div class="insight-item"><span class="icon">${insight.icon}</span><p class="text ${insight.color}">${insight.text}</p></div>`;
+            });
+          } else {
+            insightsContainer.innerHTML = `<p style="text-align:center; color: var(--text-secondary);">Add more data to get insights.</p>`;
+          }
+        }
+
+        function renderAchievements(budgetUsed) {
+          achievementsContainer.innerHTML = "";
+          const achievements = [];
+          if (budget > 0 && budgetUsed < 70)
+            achievements.push({
+              icon: "🥇",
+              title: "Budget Master",
+              desc: "Under 70% of budget used!",
+              color:
+                "linear-gradient(to right, var(--neon-green), var(--neon-blue))",
+            });
+          if (budget - totalExpenses > 15000)
+            achievements.push({
+              icon: "💰",
+              title: "Savings Champion",
+              desc: "Saved over ₹15,000!",
+              color:
+                "linear-gradient(to right, var(--neon-green), var(--neon-purple))",
+            });
+          if (categoryData.length >= 5)
+            achievements.push({
+              icon: "🎯",
+              title: "Category Explorer",
+              desc: "Used 5+ categories!",
+              color:
+                "linear-gradient(to right, var(--neon-blue), var(--neon-pink))",
+            });
+
+          if (achievements.length > 0) {
+            achievements.forEach((ach) => {
+              achievementsContainer.innerHTML += `<div class="achievement-item"><div class="icon-container" style="background-image: ${ach.color};">${ach.icon}</div><h3>${ach.title}</h3><p>${ach.desc}</p></div>`;
+            });
+          } else {
+            achievementsContainer.innerHTML = `<p style="text-align:center; color: var(--text-secondary);">Complete financial goals to unlock achievements!</p>`;
+          }
+        }
+
+        function toggleEdit(isEditing) {
+          budgetDisplayContainer.classList.toggle("hidden", isEditing);
+          budgetEditContainer.classList.toggle("hidden", !isEditing);
+        }
+
+        // --- EVENT LISTENERS ---
+        editBudgetBtn.addEventListener("click", () => toggleEdit(true));
+        cancelBudgetBtn.addEventListener("click", () => toggleEdit(false));
+        saveBudgetBtn.addEventListener("click", () => {
+          const newBudgetValue = parseFloat(newBudgetInput.value);
+          if (!isNaN(newBudgetValue) && newBudgetValue >= 0) {
+            budget = newBudgetValue;
+            renderAll();
+          }
+          toggleEdit(false);
+        });
+
+        // --- INITIALIZATION ---
+        renderAll();
+      });
+    </script>
+  </body>
+</html>
