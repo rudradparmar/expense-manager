@@ -7,8 +7,8 @@ export default function Signup() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
-    <div className="layout-center-shell center-page-wrapper">
-      <div className="center-content-limit narrow" style={{ width: "100%" }}>
+  <div className="viewport-center">
+  <div className="center-content-limit narrow">
         <div className="main-wrapper">
           {/* Header */}
           <div className="header animate-fade-in-up" style={{ textAlign: "center" }}>
@@ -43,7 +43,7 @@ export default function Signup() {
                   Full Name
                 </label>
                 <div className="input-wrapper">
-                  <span className="input-icon">
+                  {/* <span className="input-icon"> */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -58,7 +58,7 @@ export default function Signup() {
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
-                  </span>
+                  {/* </span> */}
                   <input
                     type="text"
                     id="name"
@@ -76,7 +76,7 @@ export default function Signup() {
                   Email Address
                 </label>
                 <div className="input-wrapper">
-                  <span className="input-icon">
+                  {/* <span className="input-icon"> */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -91,7 +91,7 @@ export default function Signup() {
                       <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                     </svg>
-                  </span>
+                  {/* </span> */}
                   <input
                     type="email"
                     id="email"
@@ -109,7 +109,7 @@ export default function Signup() {
                   Country
                 </label>
                 <div className="input-wrapper">
-                  <span className="input-icon">
+                  {/* <span className="input-icon"> */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -125,7 +125,7 @@ export default function Signup() {
                       <line x1="2" y1="12" x2="22" y2="12"></line>
                       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                     </svg>
-                  </span>
+                  {/* </span> */}
                   <select id="country" name="country" required className="form-input">
                     <option value="">Select your country</option>
                     <option value="US">United States</option>
@@ -145,7 +145,7 @@ export default function Signup() {
                   Password
                 </label>
                 <div className="input-wrapper">
-                  <span className="input-icon">
+                  {/* <span className="input-icon"> */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -167,7 +167,7 @@ export default function Signup() {
                       ></rect>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
-                  </span>
+                  {/* </span> */}
                   <input
                     type={showPassword ? "text" : "password"}
                     id="password"
@@ -180,6 +180,7 @@ export default function Signup() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="toggle-password-btn"
+                     style={{ marginRight: "30px" }}
                   >
                     {!showPassword ? (
                       <svg
@@ -222,7 +223,7 @@ export default function Signup() {
                   Confirm Password
                 </label>
                 <div className="input-wrapper">
-                  <span className="input-icon">
+                  {/* <span className="input-icon"> */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -236,7 +237,7 @@ export default function Signup() {
                     >
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     </svg>
-                  </span>
+                  {/* </span> */}
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     id="confirmPassword"
@@ -249,6 +250,7 @@ export default function Signup() {
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="toggle-password-btn"
+                     style={{ marginRight: "30px" }}
                   >
                     {!showConfirmPassword ? (
                       <svg

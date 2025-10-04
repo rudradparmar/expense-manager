@@ -7,8 +7,8 @@ export default function Login() {
   const togglePassword = () => setShowPassword((prev) => !prev);
 
   return (
-    <div className="layout-center-shell center-page-wrapper">
-      <div className="center-content-limit narrow" style={{ width: "100%" }}>
+  <div className="viewport-center">
+  <div className="center-content-limit narrow">
         <div className="main-wrapper">
           {/* Header */}
           <div className="header animate-fade-in-up" style={{ textAlign: "center" }}>
@@ -48,7 +48,7 @@ export default function Login() {
                   Email Address
                 </label>
                 <div className="input-wrapper">
-                  <span className="input-icon">
+                  {/* <span className="input-icon"> */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -63,7 +63,7 @@ export default function Login() {
                       <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                     </svg>
-                  </span>
+                  {/* </span> */}
                   <input
                     type="email"
                     id="email"
@@ -81,7 +81,7 @@ export default function Login() {
                   Password
                 </label>
                 <div className="input-wrapper">
-                  <span className="input-icon">
+                  {/* <span className="input-icon"> */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -103,7 +103,7 @@ export default function Login() {
                       ></rect>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
-                  </span>
+                  {/* </span> */}
                   <input
                     id="password-input"
                     type={showPassword ? "text" : "password"}
@@ -116,6 +116,7 @@ export default function Login() {
                     type="button"
                     onClick={togglePassword}
                     className="toggle-password-btn"
+                    style={{ marginRight: "30px" }}
                   >
                     {!showPassword ? (
                       <svg
